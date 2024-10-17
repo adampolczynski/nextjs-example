@@ -11,7 +11,6 @@ export default () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [repeatPassword, setRepeatPassword] = useState("");
 
   const [info, setInfo] = useState("");
   const [error, setError] = useState("");
@@ -19,9 +18,6 @@ export default () => {
   const validateInputs = () => {
     if (!email || !password) {
       throw new Error("Provide credentials");
-    }
-    if (repeatPassword !== password) {
-      throw new Error("Passwords do not match");
     }
 
     if (!RegExp(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i).test(email)) {
@@ -37,8 +33,10 @@ export default () => {
         body: JSON.stringify({
           email,
           password,
-          repeatPassword,
         }),
+        headers: {
+          "content-type": "application/json",
+        },
       });
 
       setInfo("Account created, you will be redirected to log in");
@@ -51,7 +49,7 @@ export default () => {
 
   useEffect(() => {
     setError("");
-  }, [email, password, repeatPassword]);
+  }, [email, password]);
 
   return (
     <MainContainer>
@@ -80,15 +78,7 @@ export default () => {
           onChange={({ target: { value } }) => setPassword(value)}
           style={{ marginBottom: "1rem" }}
         />
-        <Form.Control
-          tabIndex={3}
-          type="password"
-          placeholder="Repeat password"
-          value={repeatPassword}
-          onChange={({ target: { value } }) => setRepeatPassword(value)}
-          style={{ marginBottom: "1rem" }}
-        />
-        <Button tabIndex={4} onClick={submit}>
+        <Button tabIndex={3} onClick={submit}>
           Create account
         </Button>
       </AuthFormCard>

@@ -11,16 +11,22 @@ export const request = async (
     // credentials: 'include',
     headers: {
       authorization: `Bearer ${authToken}`,
+      ...opts?.headers,
       // cookie: `token=${authToken};path=/;expires=Session;SameSite=Strict`,
     },
   });
 
-  const jsonBody = await res.json();
-
+  let body;
+  try {
+    body = res.json();
+  } catch (e) {
+    console.debug(e);
+    body = res.body;
+  }
   const { status, statusText } = res;
 
   return {
-    ...jsonBody,
+    body,
     status,
     statusText,
   };
