@@ -16,13 +16,24 @@ export const request = async (
     },
   });
 
-  let body;
-  try {
-    body = res.json();
-  } catch (e) {
-    console.debug(e);
-    body = res.body;
+  if (!res.ok) {
+    const msg = `API request err (status ${res.status}): ${res.statusText}`;
+    console.debug(msg);
+    // throw new Error(
+    //   msg
+    // );
   }
+
+  let body;
+
+  const contentType = res.headers.get("content-type");
+
+  if (contentType && contentType.includes("application/json")) {
+    body = await res.json();
+  } else {
+    body = await res.text();
+  }
+
   const { status, statusText } = res;
 
   return {
